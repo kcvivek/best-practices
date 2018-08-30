@@ -61,20 +61,20 @@ $
 #!/bin/bash
 ENVS='dev,qa,stage,prod'
 APPS='rabbitmq,onlyoffice-documentserver'
-mkdir -p environments/{$ENVS}/group_vars/all/
+eval "mkdir -p environments/{$ENVS}/group_vars/all/"
 touch environments/000_cross_env_vars
-for env in $(echo $ENVS | tr "," " "); 
-do 
-    cd environments/${env}/group_vars/all/ && ln -s ../../../000_cross_env_vars . && cd - ; 
+for env in $(echo $ENVS | tr "," " ");
+do
+    cd environments/${env}/group_vars/all/ && ln -s ../../../000_cross_env_vars . && cd - ;
 done
 
-touch environments/{$ENVS}/group_vars/all/env_specific
-mkdir environments/{$ENVS}/group_vars/{$(echo $APPS | tr "," " ")}
-touch environments/{$ENVS}/hosts
+eval "touch environments/{$ENVS}/group_vars/all/env_specific"
+eval "mkdir environments/{$ENVS}/group_vars/{$APPS}"
+eval "touch environments/{$ENVS}/hosts"
 
-$ cat >> ansible.cfg
+cat <<-EOM > ansible.cfg
 [defaults]
 inventory = ./environments/dev
 
-^D
+EOM
 
