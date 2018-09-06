@@ -1,3 +1,4 @@
+# Here is the full output in json
 $ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.'
 {
   "status": {
@@ -25,20 +26,22 @@ $ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.'
   }
 }
 
-$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.Redis}'
+# Filter for Redis that's under status object , and call it as Engine
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{Engine: .status.Redis}'
 {
-  "AppEngine": {
+  "Engine": {
     "state": "DOWN"
   }
 }
 
+# Filter for Redis & AppEngine that's under status object , and call it as AppEngine & Redis
 $ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.AppEngine.state, Redis: .status.Redis.state}'
 {
   "AppEngine": "UP",
   "Redis": "DOWN"
 }
 
-
+# Filter for Redis & AppEngine that's under status object , and call it as App & DB
 $ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{App: .status.AppEngine.state, DB: .status.Redis.state}'
 {
   "App": "UP",
