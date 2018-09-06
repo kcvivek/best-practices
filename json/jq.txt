@@ -1,0 +1,46 @@
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.'
+{
+  "status": {
+    "DatabaseEngine": {
+      "state": "UP"
+    },
+    "Redis": {
+      "state": "DOWN"
+    },
+    "DatabaseSearch": {
+      "state": "UP"
+    },
+    "Portal": {
+      "state": "UP"
+    },
+    "Analytics": {
+      "state": "UP"
+    },
+    "AppEngine": {
+      "state": "UP"
+    },
+    "Server": {
+      "state": "UP"
+    }
+  }
+}
+
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.Redis}'
+{
+  "AppEngine": {
+    "state": "DOWN"
+  }
+}
+
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.AppEngine.state, Redis: .status.Redis.state}'
+{
+  "AppEngine": "UP",
+  "Redis": "DOWN"
+}
+
+
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{App: .status.AppEngine.state, DB: .status.Redis.state}'
+{
+  "App": "UP",
+  "DB": "DOWN"
+}
