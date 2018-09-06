@@ -47,3 +47,25 @@ $ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{App: .
   "App": "UP",
   "DB": "DOWN"
 }
+
+
+# Manupulate values inside array if you need to (notice changes in output formatting)
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.AppEngine, Redis: [.status.Redis]}'
+{
+  "AppEngine": {
+    "state": "UP"
+  },
+  "Redis": [
+    {
+      "state": "DOWN"
+    }
+  ]
+}
+# Cascade it however you like it
+$ curl https://portal2-t2.vera.com/api/health/status 2>/dev/null | jq '.|{AppEngine: .status.AppEngine, Redis: [.status.Redis]}' | jq '.|{App: .AppEngine.state, Redis: .Redis[0].state}'
+{
+  "App": "UP",
+  "Redis": "DOWN"
+}
+
+
