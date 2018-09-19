@@ -1,0 +1,59 @@
+
+$ tree
+.
+├── environments
+│   ├── prod
+│   │   ├── core
+│   │   │   ├── config.tf
+│   │   │   ├── terraform.tf
+│   │   │   ├── terraform.tfstate
+│   │   │   └── terraform.tfvars
+│   │   ├── docserver
+│   │   │   ├── config.tf
+│   │   │   ├── terraform.tf
+│   │   │   ├── terraform.tfstate
+│   │   │   └── terraform.tfvars
+│   │   └── rabbitmq
+│   │       ├── config.tf
+│   │       ├── terraform.tf
+│   │       ├── terraform.tfstate
+│   │       └── terraform.tfvars
+│   └── qa
+│       ├── core
+│       │   ├── config.tf
+│       │   ├── terraform.tf
+│       │   ├── terraform.tfstate
+│       │   └── terraform.tfvars
+│       ├── docserver
+│       │   ├── config.tf
+│       │   ├── terraform.tf
+│       │   ├── terraform.tfstate
+│       │   └── terraform.tfvars
+│       └── rabbitmq
+│           ├── config.tf
+│           ├── terraform.tf
+│           ├── terraform.tfstate
+│           └── terraform.tfvars
+└── modules
+    ├── core
+    │   ├── core.tf
+    │   ├── input.tf
+    │   └── output.tf
+    ├── docserver
+    │   ├── alb.tf
+    │   ├── datadog.tf
+    │   ├── dns.tf
+    │   ├── input.tf
+    │   ├── output.tf
+    │   ├── splunk.tf
+    │   └── vms.tf
+    └── rabbitmq
+        ├── datadog.tf
+        ├── dns.tf
+        ├── elb.tf
+        ├── input.tf
+        ├── output.tf
+        ├── splunk.tf
+        └── vms.tf
+
+13 directories, 41 files
