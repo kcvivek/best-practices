@@ -5,42 +5,157 @@ Article - https://www.digitalocean.com/community/tutorials/how-to-manage-multist
 
 """
 
+$ tree
 .
 ├── ansible.cfg
-├── environments/
-│   │
-│   ├── 000_cross_env_vars
-│   │
-│   ├── dev/
-│   │   ├── group_vars/
-│   │   │   ├── all/
-│       │   │   ├── 000_cross_env_vars -> ../../../000_cross_env_vars
-│   │   │   │   └── env_specific
-│   │   │   ├── db
-│   │   │   └── web
-│   │   └── hosts
-│   │
-│   ├── prod/
-│   │   ├── group_vars/
-│   │   │   ├── all/
-│   │   │   │   ├── 000_cross_env_vars -> ../../../000_cross_env_vars
-│   │   │   │   └── env_specific
-│   │   │   ├── db
-│   │   │   └── web
-│   │   └── hosts
-│   │
-│   └── stage/
-│       ├── group_vars/
-│       │   ├── all/
-│       │   │   ├── 000_cross_env_vars -> ../../../000_cross_env_vars
-│       │   │   └── env_specific
-│       │   ├── db
-│       │   └── web
-│       └── hosts
-│
-├── playbook.yml
-│
-└── . . .
+├── ansible.sh
+├── environments
+│   ├── 000_common_env_vars.yml
+│   ├── dev
+│   │   ├── group_vars
+│   │   │   └── all
+│   │   │       ├── 000_common_env_vars.yml -> ../../../000_common_env_vars.yml
+│   │   │       ├── common.yml
+│   │   │       ├── documentserver.yml
+│   │   │       ├── efs.yml
+│   │   │       ├── licenses.yml
+│   │   │       ├── rabbitmq.yml
+│   │   │       └── secrets_vault.yml
+│   │   └── hosts
+│   ├── prod
+│   │   ├── group_vars
+│   │   │   └── all
+│   │   │       ├── 000_common_env_vars.yml -> ../../../000_common_env_vars.yml
+│   │   │       ├── common.yml
+│   │   │       ├── documentserver.yml
+│   │   │       ├── efs.yml
+│   │   │       └── rabbitmq.yml
+│   │   └── hosts
+│   ├── qa
+│   │   ├── group_vars
+│   │   │   └── all
+│   │   │       ├── 000_common_env_vars.yml -> ../../../000_common_env_vars.yml
+│   │   │       ├── common.yml
+│   │   │       ├── documentserver.yml
+│   │   │       ├── efs.yml
+│   │   │       ├── licenses.yml
+│   │   │       ├── rabbitmq.yml
+│   │   │       └── secrets_vault.yml
+│   │   └── hosts
+│   └── stage
+│       ├── group_vars
+│       │   └── all
+│       │       ├── 000_common_env_vars.yml -> ../../../000_common_env_vars.yml
+│       │       ├── common.yml
+│       │       ├── documentserver.yml
+│       │       ├── efs.yml
+│       │       └── rabbitmq.yml
+│       └── hosts
+├── requirements.yml
+├── roles
+│   ├── common
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   ├── files
+│   │   │   ├── RPM-GPG-KEY-ONLYOFFICE
+│   │   │   └── RPM-PGP-KEY-VERA
+│   │   ├── handlers
+│   │   │   └── main.yml
+│   │   ├── meta
+│   │   │   └── main.yml
+│   │   ├── tasks
+│   │   │   └── main.yml
+│   │   └── templates
+│   │       └── vera.repo.j2
+│   ├── documentserver
+│   │   ├── LICENSE.txt
+│   │   ├── README.md
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   ├── files
+│   │   │   ├── documentserver-configure.sh
+│   │   │   ├── license.lic
+│   │   │   └── metrics_config.js
+│   │   ├── handlers
+│   │   │   └── main.yml
+│   │   ├── tasks
+│   │   │   ├── Debian.yml
+│   │   │   ├── RedHat.yml
+│   │   │   └── main.yml
+│   │   ├── templates
+│   │   │   ├── onlyoffice-documentserver-vera.conf.j2
+│   │   │   └── onlyoffice_config_args.j2
+│   │   ├── tests
+│   │   │   └── test.yml
+│   │   └── vars
+│   │       ├── Debian.yml
+│   │       ├── RedHat.yml
+│   │       └── main.yml
+│   ├── efsnode
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   └── tasks
+│   │       └── main.yml
+│   ├── epel
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   └── tasks
+│   │       └── main.yml
+│   ├── node6_repo
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   └── tasks
+│   │       └── main.yml
+│   ├── prep_localhost
+│   │   ├── tasks
+│   │   │   └── main.yml
+│   │   └── templates
+│   │       └── aws_credentials.j2
+│   ├── rabbitmq
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   ├── handlers
+│   │   │   └── main.yml
+│   │   ├── tasks
+│   │   │   ├── cluster.yml
+│   │   │   ├── config.yml
+│   │   │   ├── config_cluster.yml
+│   │   │   ├── enable_ha_queues.yml
+│   │   │   ├── erlang_cookie.yml
+│   │   │   ├── hosts.yml
+│   │   │   ├── install.yml
+│   │   │   ├── join_cluster.yml
+│   │   │   ├── main.yml
+│   │   │   ├── service.yml
+│   │   │   └── tls.yml
+│   │   └── templates
+│   │       ├── erlang.cookie.j2
+│   │       └── etc
+│   │           ├── firewalld
+│   │           │   └── services
+│   │           │       └── rabbitmq.xml.j2
+│   │           ├── logrotate.d
+│   │           │   └── rabbitmq-server.j2
+│   │           └── rabbitmq
+│   │               ├── rabbitmq-env.conf.j2
+│   │               └── rabbitmq.config.j2
+│   └── vera_infra_ops
+│       ├── handlers
+│       │   └── main.yml
+│       ├── meta
+│       │   └── main.yml
+│       ├── tasks
+│       │   └── main.yml
+│       └── templates
+│           ├── alb_route53_cname.json.j2
+│           ├── verasplunk_deploymentclient.conf.j2
+│           ├── verasplunk_input.j2
+│           └── verasplunk_runme.sh.j2
+├── site.yml
+└── site_test.yml
+
+56 directories, 90 files
+
 
 
 """ 
