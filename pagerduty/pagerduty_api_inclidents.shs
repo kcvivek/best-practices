@@ -1,0 +1,16 @@
+#! /bin/bash
+
+today=$(date +"%Y-%m-%d")
+weekago=$(date -v -7d +"%Y-%m-%d")
+
+for i in $(seq 0 25 10000); do
+  contents=$(curl -X GET --header 'Accept: application/vnd.pagerduty+json;version=2' --header 'Authorization: Token token=XXXXXXXXXXXXXX' "https://api.pagerduty.com/incidents?limit=25&offset="$i"&since="$weekago"&until="$today"&team_ids%5B%5D=XXXXX")
+  echo "$contents" >> ./pd_output.json
+  if grep '"more":false' <<< "$contents" ; then
+echo Report complete!
+break
+  fi
+done && jq --raw-output '(.incidents[] | [.incident_number, .title, (.service | .summary), (.first_trigger_log_entry | .summary ), (.teams[] | .summary ), .created_at, ( .last_status_change_at ), (if .last_status_change_by .type == "service_reference" then "Integration API" else .last_status_change_by .summary end)] | @csv)' ./pd_output.json > ./script_output.csv && echo '"Incident Number", "Title", "Service", "Trigger", "Team", "Incident Start", "Incident End", "Ended By"' | cat - ./script_output.csv > temp && mv temp ./script_output.csv && rm ./pd_output.json
+2
+
+
